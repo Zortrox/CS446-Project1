@@ -40,6 +40,22 @@ std::vector<Circle*> vecCircles;
 GLObject objShape;
 bool menuOpen = false;
 
+void drawCircle(Circle* cir, int reso) {
+	glBegin(GL_POLYGON);
+	for (int j = 0; j < reso; j++) {
+		double xPos = cir->m_x + cir->m_r * cos((2 * PI) / reso * j);
+		double yPos = cir->m_y + cir->m_r * sin((2 * PI) / reso * j);
+
+		glVertex2f((float)xPos, (float)yPos);
+	}
+	glEnd();
+}
+
+void drawCircle(int x, int y, int r, int resolution) {
+	Circle temp(x, y, r);
+	drawCircle(&temp, resolution);
+}
+
 void displayLoop(void) {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -50,44 +66,55 @@ void displayLoop(void) {
 	//draw circles
 	glColor3f(1.0f, 1.0f, 1.0f);
 	for (size_t i = 0; i < vecCircles.size(); i++) {
-		Circle* cir = vecCircles.at(i);
-
-		glBegin(GL_POLYGON);
-
-		for (int j = 0; j < CIRCLE_RES; j++) {
-			double xPos = cir->m_x + cir->m_r * cos((2 * PI) / CIRCLE_RES * j);
-			double yPos = cir->m_y + cir->m_r * sin((2 * PI) / CIRCLE_RES * j);
-
-			glVertex2f((float)xPos, (float)yPos);
-		}
-
-		glEnd();
+		drawCircle(vecCircles.at(i), CIRCLE_RES);
 	}
 
 	//draw transformed shape
-
 	glTranslated(objShape.xPos, objShape.yPos, 0);
-	glScaled(objShape.hScale, objShape.vScale, 1);
 	glRotated(objShape.angle, 0, 0, 1);
+	glScaled(objShape.hScale, objShape.vScale, 1);
+	
 
-	glColor3f(0.0f, 1.0f, 0.0f);
-
-	glBegin(GL_QUADS);
-	glVertex2f(-40, -40);
-	glVertex2f(40, -40);
-	glVertex2f(-40, 40);
-	glVertex2f(40, 40);
-
-	glVertex2f(60, 60);
-	glVertex2f(140, 60);
-	glVertex2f(60, 140);
-	glVertex2f(140, 140);
-	glEnd();
+	glColor3f(0.82f, 0.71f, 0.55f);
+	drawCircle(0, 0, 40, 40);
 
 	glBegin(GL_TRIANGLES);
-	glVertex2f(-40, -40);
-	glVertex2f(140, 60);
-	glVertex2f(160, 140);
+	glVertex2f(-35, -10);
+	glVertex2f(-50, -60);
+	glVertex2f(-15, -35);
+	glVertex2f(35, -10);
+	glVertex2f(50, -60);
+	glVertex2f(15, -35);
+	glEnd();
+
+	glColor3f(0.24f, 0.70f, 0.44f);
+	drawCircle(-15, -15, 7, 10);
+	drawCircle(15, -15, 7, 10);
+
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex2f(-16, -15);
+	glVertex2f(-14, -15);
+	glVertex2f(-15, -23);
+	
+	glVertex2f(-16, -15);
+	glVertex2f(-14, -15);
+	glVertex2f(-15, -7);
+
+	glVertex2f(16, -15);
+	glVertex2f(14, -15);
+	glVertex2f(15, -23);
+
+	glVertex2f(16, -15);
+	glVertex2f(14, -15);
+	glVertex2f(15, -7);
+	glEnd();
+
+	glColor3f(.80f, 0.51f, 0.55f);
+	glBegin(GL_TRIANGLES);
+	glVertex2f(0, -2);
+	glVertex2f(-6, 9);
+	glVertex2f(6, 9);
 	glEnd();
 
 	glutSwapBuffers();
@@ -219,7 +246,7 @@ void mouseButton(int button, int state, int x, int y) {
 
 void redraw(int) {
 	glutPostRedisplay();
-	glutTimerFunc(1000.0 / 60, redraw, 0);
+	glutTimerFunc(1000 / 60, redraw, 0);
 }
 
 int main(int argc, char* argv[]) {
@@ -237,7 +264,7 @@ int main(int argc, char* argv[]) {
 	glutDisplayFunc(displayLoop);
 	//glutReshapeFunc(changeSize);
 	//glutIdleFunc(displayLoop);
-	glutTimerFunc(1000.0 / 60, redraw, 0);
+	glutTimerFunc(1000 / 60, redraw, 0);
 
 	//ignore repeated key holding
 	glutIgnoreKeyRepeat(true);
